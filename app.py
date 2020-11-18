@@ -1,9 +1,10 @@
 from fastapi import FastAPI
+import vboxapi
+import virtualbox
 import os
-# import virtualbox
 
 app = FastAPI()
-# vbox = virtualbox.VirtualBox()
+vbox = virtualbox.VirtualBox()
 
 base_vms = {
             "vm1": "192.168.1.56",
@@ -14,9 +15,7 @@ v_command = 'vboxmanage '
 
 @app.get("/")
 async def root():
-    stream = os.popen(v_command + 'list vms')
-    output = stream.readlines()
-    return output
+    return [m.name for m in vbox.machines]
 
 
 # vms controller basically
@@ -39,7 +38,11 @@ def stop_start(stop: bool, vm_name: str):
 
     return stream.readlines()
 
-def status(): pass
+@app.get("status")
+def status():
+    # return a list of vm names and their status
+    pass
+
 
 def depInf(): pass # if the v command was as same as thes status one, handle with adding a flag not endpoints
 

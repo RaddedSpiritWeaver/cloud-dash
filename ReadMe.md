@@ -15,3 +15,5 @@ https://forums.virtualbox.org/viewtopic.php?f=7&t=92707
 http://www.cesareriva.com/how-to-install-the-virtualbox-sdk/
 
 https://janakiev.com/blog/python-shell-commands/
+
+https://github.com/sethmlarson/virtualbox-python/issues/104
