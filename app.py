@@ -21,12 +21,12 @@ async def root():
 # vms controller basically
 @app.get("/vms")
 async def command():
-    stream = os.popen(v_command + 'list vms')
-    output = stream.readlines()
-    return output
+    return [m.name for m in vbox.machines]
+#return names of vms as a list of strings
 
 @app.get("/power")
 def stop_start(stop: bool, vm_name: str):
+    # todo: start and stop vms and keep track of their sessions soo you can interact with them
     stream = None
     if stop:
         command = "controlvm "
@@ -37,14 +37,21 @@ def stop_start(stop: bool, vm_name: str):
         stream = os.popen(v_command + command + vm_name)
 
     return stream.readlines()
+# no return
 
-@app.get("status")
-def status():
-    # return a list of vm names and their status
-    pass
+@app.get("/status")
+def status(vm_name: str):
+    machine = vbox.find_machine(vm_name)
+    return machine.state
+
+# sample return value
+# {
+#   "_value": 5, # this seems to mean online
+#   "__doc__": "Pseudo-state: first online state (for use in relational expressions)."
+# }
 
 
-def depInf(): pass # if the v command was as same as thes status one, handle with adding a flag not endpoints
+def depInf(): pass 
 
 def modify(): pass
 
