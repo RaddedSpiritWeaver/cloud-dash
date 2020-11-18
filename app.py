@@ -5,9 +5,12 @@ import os
 app = FastAPI()
 # vbox = virtualbox.VirtualBox()
 
-base_vms = ["192.168.1.56", "192.168.1.56"]
+base_vms = {
+            "vm1": "192.168.1.56",
+            "vm2": "192.168.1.57"
+           }
 
-v_command = 'vboxmanage'
+v_command = 'vboxmanage '
 
 @app.get("/")
 async def root():
@@ -16,14 +19,25 @@ async def root():
     return output
 
 
+# vms controller basically
 @app.get("/vms")
 async def command():
     stream = os.popen(v_command + 'list vms')
     output = stream.readlines()
     return output
 
-def stop_start():
-    pass
+@app.get("/power")
+def stop_start(stop: bool, vm_name: str):
+    stream = None
+    if stop:
+        command = "controlvm "
+        subcommand = " poweroff"
+        stream = os.popen(v_command + command + vm_name + subcommand)
+    else:
+        command = "startvm "
+        stream = os.popen(v_command + command + vm_name)
+
+    return stream.readlines()
 
 def status(): pass
 
