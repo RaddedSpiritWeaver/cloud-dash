@@ -50,8 +50,12 @@ def status(vm_name: str):
 #   "__doc__": "Pseudo-state: first online state (for use in relational expressions)."
 # }
 
-
-def depInf(): pass 
+@app.get("/deep")
+def depInf(vm_name: str):
+    # todo: idk how to use the main api for this
+    stream = os.popen(v_command + 'showvminfo ' + vm_name)
+    return stream.readlines()
+# retrons a list of strings that, a sample output is provided
 
 def modify(): pass
 
