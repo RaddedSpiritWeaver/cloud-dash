@@ -23,8 +23,12 @@ async def root():
 
 # vms controller basically
 @app.get("/vms")
-async def command():
+async def command(running: bool):
+    if running:
+        stream = os.popen("vboxmanage list runningvms")
+        return stream.readlines()
     return [m.name for m in vbox.machines]
+
 #return names of vms as a list of strings
 
 @app.get("/power")
@@ -70,7 +74,11 @@ def modify(vm_name: str, cpus: int = None, memory: int = None):
     stdout, stderr = process.communicate()
     return None
 
-def delete_vm(): pass
+@app.delete("/delete")
+def delete_vm(vm_name: str):
+    process = subprocess.Popen(["vboxmanage", 'unregistervm', vm_name, "--delete"])
+    stdout, stderr = process.communicate()
+    return None
 
 @app.get("/clone")
 def clone_vm(vm_name: str):
@@ -88,5 +96,14 @@ def clone_vm(vm_name: str):
     os.chdir(old_dir)
     return name
     
+@app.get("/pass-command")
+def pass_command(ip: str, command: str):
+    ssh = "vmmaster@{}".format(ip)
+    stream = os.popen("ssh {} {}".format(ssh, command))
+    return stream.readlines()
+    
 
-def pass_command(): pass
+@app.get("/arp")
+def do_arp():
+    stream = os.popen("arp -a")
+    return stream.readlines()
