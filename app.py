@@ -1,6 +1,7 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 import time
-import vboxapi
+# import vboxapi
 import virtualbox
 import os
 from datetime import datetime
@@ -8,6 +9,14 @@ import subprocess
 
 app = FastAPI()
 vbox = virtualbox.VirtualBox()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 base_vms = {
             "vm1": "192.168.1.56",
